@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+:root {
+    --primary-color: #AB0A10;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Kanit", sans-serif;
+}
+
+.container {
+    // background-color: antiquewhite;
+    width: 100%;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+}
+
+.coverPage {
+    height: 670px;
+    // background-color: aqua;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 0;
+}
+
+.movieList {
+    height: 400px;
+    width: 100%;
+    // background-color: aquamarine;
+}
+.movieSelect {
+    height: 390px;
+    width: 290px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: inset 0px -115px 147px 1px rgba(29,29,29,1);
+    padding: 40px;
+    div {
+        text-align: center;
+        font-size: 20px;
+        margin-bottom: 10px;
+        color:white;
+    }
+    button {
+        color:#FFF;
+        background-color: var(--primary-color);
+        border-radius: 5px;
+        padding: 8px 25px;
+        border: none;
+        height: 36px;
+        width: 123px;
+    }
+}
+
+.coverImage {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    height: 773px;
+    overflow: hidden;
+    min-width: 1200px;
+    min-height: 773px;
+    // max-width: 1500px;
+    img {
+        // height: 773px;
+        min-height: 773px;
+        width: 100%;
+    }
+}
+
+.coverImage::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1D1D1D50;
+}
+
+// #######  หน้าเนื้อ ############
+
+.Movie {
+    // background-color: #AB0A10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0px 100px;
+    margin-top: 90px;
+    font-size: 25px;
+   div {
+    color: black;
+    font-weight: 600;
+   } 
+   :nth-child(2), span {
+    font-size: 16px;
+    color: gray;
+    font-weight: 400;
+   }
+}
+
+.Movie-Container {
+    display: flex;
+    margin-top: 49px;
+}
+
+.Movie-List {
+    width: 309px;
+    height: 450px;
+    background-color: aqua;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    box-shadow: inset 0px -115px 204px -33px rgb(0, 0, 0);
+    margin-right: 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 0 30px 30px;
+    color: #FFF;
+    &-Name {
+        font-size: 22px;
+        font-weight: 500;   
+    }
+    &-Date {
+        font-size: 16px;  
+    }
+    &-Age {
+        font-weight: 500;
+    }
+    &-Lang {
+        display: flex;
+    }
+}
+
+.Movie-List-Lang {
+    div {
+        background-color: #ffffff25;
+        margin-right: 6px;
+        border-radius: 5px;
+        padding: 4px 10px;
+    }
+}
+.followed-Header {
+    color: #000;
+    font-size: 25px;
+}
+.followed {
+    &-list {
+        background-color: #0F0F0F;
+        &-Pic {
+
+        }
+        &-Name {
+            font-size: 20px;
+        }
+    }
+}
+.aboutUs {
+    color: #000;
+}
