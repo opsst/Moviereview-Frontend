@@ -125,6 +125,7 @@ const RegisterForm = ({ closeModal }) => {
                 accept="image/*"
               />
               <button type="submit">Register</button>
+              <a href='/login'>Login</a>
             </form>
             </div>
         </div>

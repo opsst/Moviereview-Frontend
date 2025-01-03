@@ -1,24 +1,24 @@
-function setToken(token) {
-    localStorage.setItem("ACCESS_TOKEN", token);
+function  setItem(key, value) {
+    localStorage.setItem(key, value);
 }
 
-function getToken(){
+function getItem(){
     return localStorage.getItem("ACCESS_TOKEN");
 }
 
-function removeToken(){
+function removeItem(){
     localStorage.removeItem("ACCESS_TOKEN");
 }
 
 function getRole() {
-    if(getToken()) {
+    if(getItem()) {
         return "user";
     }
     return "guest"
 }
 export default {
-    setToken,
-    getToken,
-    removeToken,
+    setItem,
+    getItem,
+    removeItem,
     getRole
 };

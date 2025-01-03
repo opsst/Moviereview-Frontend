@@ -1,27 +1,41 @@
 import React, { useState, useEffect } from "react";
 import {BrowserRouter as Router, Routes, Outlet, Route, Link, useLocation} from "react-router-dom";
 import RegisterForm from './RegisterForm';
-import Login from './Login'
+import Login from './Login';
+import localStorage from "./services/localStorageService";
+import { useNavigate } from 'react-router-dom'; // เพิ่มการนำเข้า useNavigate
 
 function Layout({setRole}) {
-    const location = useLocation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-  
-    // ตรวจสอบว่า path เป็น /register หรือ /login
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // สถานะล็อกอิน
+    const navigate = useNavigate(); // ประกาศ useNavigate เพื่อใช้งาน
+
     useEffect(() => {
-        if (location.pathname === "/register" || location.pathname === "/login") {
-            setIsModalOpen(true);
-        } else {
-            setIsModalOpen(false);
-        }
-    }, [location]);
+        const token = localStorage.getItem('token');
+        setIsLoggedIn(!!token); // เช็คว่า token มีหรือไม่
+    }, []);
 
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
-    const openModal = (path) => {
+    const openModal = () => {
         setIsModalOpen(true);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // ลบ token ออกจาก localStorage
+        setRole("guest");
+        setIsLoggedIn(false); // เปลี่ยนสถานะการล็อกอินเป็น false
+        navigate('/');
+    };
+
+    const handleLoginLogoutClick = () => {
+        if (isLoggedIn) {
+            handleLogout(); // ถ้า logged in แล้ว, ให้ logout
+        } else {
+            openModal(); // ถ้าไม่ได้ล็อกอิน, ให้เปิดโมดอล
+        }
     };
   
     return (
@@ -40,8 +54,10 @@ function Layout({setRole}) {
                   <li>
                       <Link to ="/profile">Profile</Link>
                   </li>
-                  <li onClick={openModal}>
-                      <span style={{ cursor: 'pointer' }}>Login</span>
+                  <li onClick={handleLoginLogoutClick}>
+                        <span style={{ cursor: 'pointer' }} >
+                            {isLoggedIn ? 'Logout' : 'Login'}
+                        </span>
                       <i className="fa-regular fa-user"></i>
                   </li>
             </nav>
@@ -51,10 +67,12 @@ function Layout({setRole}) {
            {/* แสดงโมดอลหาก isModalOpen เป็น true */}
            {isModalOpen && (
                 <>
-                    {location.pathname === "/login" && <Login closeModal={closeModal} setRole={setRole} />}
-                    {location.pathname === "/register" && <RegisterForm closeModal={closeModal} />}
+                    <Login 
+                        closeModal={closeModal} 
+                        setRole={setRole} 
+                        setIsLoggedIn={setIsLoggedIn}/>
                 </>
-            )}
+)}
     </div>
     )
   }

@@ -2,10 +2,10 @@ import { React, useState } from 'react';
 import './Login.scss';
 import axios from './config/axios';
 import { notification } from 'antd';
-import localStorageService from './services/localStorageService';
+import localStorage from './services/localStorageService';
 import { useNavigate } from 'react-router-dom'; // เพิ่มการนำเข้า useNavigate
 
-const Login = ({ closeModal , setRole}) => {
+const Login = ({ closeModal , setRole, setIsLoggedIn}) => {
   const [formData, setFormData] = useState({
     username: '',
     password:'',
@@ -31,30 +31,29 @@ const Login = ({ closeModal , setRole}) => {
   const handleClose = () => {
     if (closeModal) closeModal();
   };
-  
+
   const handleSubmit = async (e) => {
-    console.log("เจมมมมม")
     e.preventDefault();
     setLoading(true);
     const data = {
         username: formData.username,
         password: formData.password,
     };
-    console.log("เจมมมมม")
     try {
         const response = await axios.post('/user/login', data, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        console.log(`dsdd+${response.data}`);
         
          // ตรวจสอบว่า response.data มีค่าและมี token หรือไม่
         if  (response.status === 200) {
             const token = response.data.token;
-            localStorage.setItem("token",token); // เก็บ token ใน localStorage
+            localStorage.setItem("ACCESS_TOKEN",token); // เก็บ token ใน localStorage
+            setIsLoggedIn(true);
             setRole('user'); // กำหนด role หลังจากล็อกอินสำเร็จ
             openNotificationWithIcon('success', 'Login Success', 'You have successfully logged in!');
+            handleClose(); // ปิดโมดอล
             navigate('/profile'); // เปลี่ยนเส้นทางไปหน้าโปรไฟล์
         } else {
             openNotificationWithIcon('error', 'Login Failed', 'No token found in response');
@@ -103,6 +102,7 @@ const Login = ({ closeModal , setRole}) => {
                     <button type="submit" disabled={loading} onClick={handleSubmit}>
                     {loading ? 'Loading...' : 'Login'}
                     </button>
+                    <a href='/register' onClick={handleClose}>Register</a>
                 </form>
             </div>
         </div>
