@@ -1,8 +1,67 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./movieinfo.scss"
 import Movieactor from "./component/movieinfo-actor";
+import CommentCard from "./Comment";
+import _ from "lodash";
+import axios from "./config/axios";
 
 function Movieinfo() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const togglePopup = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const [text, textUpdate] = useState("");
+    const [comment, setComment] = useState([]);
+    const [movie, setMovie] = useState([]);
+    
+    const fetchMovie = async() => {
+        try {
+            const httpResponse = await axios.get("/movie");
+            setMovie(httpResponse.data);
+        } catch (error) {
+            console.error("Error fetching movies:", error);
+        }
+    };
+    
+    const fetchComment = async () => {
+        try {
+            const httpResponse = await axios.get("/comment");
+            setComment(httpResponse.data);
+        } catch (error) {
+            console.error("Error fetching comments:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchComment();
+        fetchMovie();
+    },[]);
+    
+    const addPlaylist = async () => {
+        try {
+            await axios.post("/comment/addcomment", {
+                commentDate: 53,
+                commentText: text,
+                ratingscore: 5,
+                MovieId: 3
+            });
+            fetchComment();
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
+    };
+   const deletePlaylist = async (id) => {
+        console.log(id);
+        await axios.delete(`/movie/${id}`);
+        fetchComment();
+        // const newPlaylist = [...playlist];
+        // const targetIndex = newPlaylist.findIndex(playlist => playlist.id === id);
+        // newPlaylist.splice(targetIndex, 1);
+        // setPlaylist(newPlaylist);
+   };
+
     return (
         <div>
             <div className='coverImage'>
@@ -44,19 +103,63 @@ function Movieinfo() {
                 <div className="movieinfo-review">
                     <div className="movieinfo-review-header">
                         <h1>Reviews</h1>
-                        <button>+ Add Your Review</button>
+                        <button onClick={togglePopup}>+ Add Your Review</button>
                     </div>
+                    {/* {isOpen && ( */}
+                    <div className="popup-overlay" onClick={togglePopup}>
+                        <div className="popup-content" onClick={e => e.stopPropagation()}>
+                            <div>ชื่อ</div>
+                            <input type="text" value={text} onChange={(e)=> textUpdate(e.target.value)}></input>
+                            <button onClick={()=> {
+                                addPlaylist()
+                                textUpdate("") 
+                                togglePopup();
+                            }}> รีวิว</button>
+                            <button onClick={togglePopup}>ยกเลิก</button>
+                        </div>
+                    </div>
+                    )}
                     <div className="movieinfo-review-box">
                         <div>
-                            <div>
-                                1
-                            </div>
-                            <div>
-                                2
-                            </div>
-                            <div>
-                                3
-                            </div>
+                            {/* {comment.map((list => <div>{list.detail} <button onClick={() => deletePlaylist(list.id)}>ลบ</button></div>))} */}
+                            {comment.map((list => 
+                                <div className="movieinfo-review-comment">
+                                        <div className="movieinfo-review-comment-info">
+                                            <div>
+                                                <div className="movieinfo-review-comment-box">
+                                                    <div className="movieinfo-review-comment-pic">1</div>
+                                                    <div className="movieinfo-review-comment-name">ชื่อ</div>
+                                                </div>
+                                                <div>25/09/67 20.30 น.</div>
+                                            </div>
+                                            <div>
+                                            <div className="star-rating">
+                                                <div className="star-background">
+                                                    {'★'.repeat(5)} {/* ดาวเงาที่เป็นพื้นหลัง */}
+                                                </div>
+                                                <div className="star-foreground" style={{ width: `${(4.5 / 5) * 100}%` }}>
+                                                    {'★'.repeat(5)} {/* ดาวเต็มที่จะปรากฏตามคะแนน */}
+                                                </div>
+                                            </div>
+                                            <span className="rating">4.5</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>{list.commentText}</div>
+                                            <button onClick={() => deletePlaylist(list.id)}>ลบ</button>
+                                        </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div>
+                            <CommentCard 
+                                avatar="https://example.com/avatar.jpg" 
+                                name="John Doe" 
+                                date="25/09/67" 
+                                time="13.30" 
+                                commentText="This movie was recommended to me by a very dear friend who went for the movie by herself. I went to the cinemas to watch but had a houseful board so couldn’t watch it."
+                                rating={4.5}
+                            />
                         </div>
                     </div>
                     <div>

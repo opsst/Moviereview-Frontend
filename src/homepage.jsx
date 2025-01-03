@@ -1,24 +1,39 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "./homepage.scss"
 import { Link } from 'react-router-dom';
 import Movieposter from './component/movieposter';
+import Login from "./Login"
+import axios from 'axios';
 
 function Homepage() {
+    const [movielist, setmovielist] = useState([]);
+    
+    //ดึงข้อมูลหนังทั้งหมด
+    const fetchmovielist = async () => {
+        const httpResponse = await axios.get("http://localhost:8000/movie");
+        setmovielist(httpResponse.data);
+    };
+
+    useEffect(() => {
+        fetchmovielist();
+    },[]);
+
     return (
         <div className='container'>
             {/* ปกด้านบน */}
-            <div className='coverPage'>
+            {movielist.map((list) => (<div className='coverPage'>
+                
                 <div><a href='#'>Today</a></div>
                 <div className='movieList'>
                     <div className='movieSelect' style={{ backgroundImage: `url("image/fanday-poster.jpg")`}}>
-                        <div>แฟนเดย์<br></br>แฟนกันแค่วันเดียว</div>
+                    <div dangerouslySetInnerHTML={{ __html: list.title }} />
                         <Link to="/movieinfo">
                             <button>อ่านรีวิว</button>
                         </Link>
                     </div>
-                </div>
+                </div> 
             </div>
-
+            ))}
             <div className='coverImage'>
                 <img src="image/fanday.jpg" alt='fanday'/>
             </div>
@@ -34,6 +49,7 @@ function Homepage() {
                 <Movieposter moviename={"ธี่หยด"} moviepic={"image/TeeYod.jpg"} />
                 <Movieposter moviename={"ธี่หยด"} moviepic={"image/TeeYod.jpg"} />
             </div>
+
 
             {/* หนังเก่า */}
             <div className='Movie'>
